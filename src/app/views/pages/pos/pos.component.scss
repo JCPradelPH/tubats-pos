@@ -1,0 +1,45 @@
+.form-control, .mat-form-field{
+    width: 98% !important;
+}
+
+.mat-option {
+    height: 75px !important;
+}
+
+.quantity-ind {
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+
+#orders-panel{
+    border-radius: 4px;
+    background-color: #232323 !important;
+}
+
+.main-panel{
+    height: 100% !important;
+}
+
+#orders-panel, .hr {
+    color: #fff !important;
+}
+
+.hr{
+    width: 100%;
+    height: 1px;
+    background-color: #fff !important;
+}
+
+#orders-panel div.row {
+    padding: 10px;
+}
+
+.order-item-list {
+    height: 80% !important;
+    padding: 15px;
+    overflow-y: scroll;
+}
+
+.list-item{
+    padding: 5px 0px !important;
+}

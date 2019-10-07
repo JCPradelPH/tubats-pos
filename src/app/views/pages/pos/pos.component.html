@@ -1,0 +1,90 @@
+<div class="row main-panel">
+    <div class="col-lg-7">
+        <form class="kt-form" [formGroup]="mainForm" autocomplete="on">
+            <div class="form-group row">
+                <input type="text" [disabled]="loading" placeholder="Search Menu Items" aria-label="Number" formControlName="menuItems"
+                    [matAutocomplete]="auto" class="form-control">
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                    (optionSelected)="onMenuItemSelected($event)">
+                    <mat-option *ngFor="let menuItem of filteredOptions | async" [id]="menuItem"
+                        [value]="menuItem.name">
+                        <h4>{{menuItem.name}}</h4>
+                        <h6 class="text-muted">{{menuItem.categoryName}}</h6>
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
+        </form>
+
+        <div *ngIf=" selectedItemId !== undefined && selectedItemId !== null && selectedItemId !== '' ">
+            <div class="row"> 
+                <h3 class="col-lg-6">{{selectedItemName}}</h3>
+                <div class="col-lg-6 text-right">
+                    <div class="col-lg-12 text-right">
+                        <button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-2"
+                            (click)="changeQuantity(-1)">-</button>
+                        <span class="col-lg-4 quantity-ind">{{ quantity }}</span>
+                        <button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-2"
+                            (click)="changeQuantity(1)">+</button>
+                    </div>
+                </div> 
+            </div>
+            <div class="row"> <h5 class="col-lg-12">P{{selectedItemPrice}}</h5> </div>
+            <div class="row"> <h6 class="col-lg-12">{{selectedItemCategory}}</h6> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row"> <p class="col-lg-12">{{selectedItemDescription}}</p> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row">
+                <mat-chip-list #chipList>
+                    <mat-chip color="accent" *ngFor="let menuInventoryItem of selectedMenuInventoryItems">
+                        {{ menuInventoryItem.inventoryItemName }} - {{ menuInventoryItem.quantity }}
+                        {{ menuInventoryItem.inventoryItemUnitName }}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row"> <p class="col-lg-12"></p> </div>
+            <div class="row">
+                <div class="col-lg-12 text-right">
+                    <button type="button" (click)="addOrder()" class="btn btn-info btn-elevate kt-login__btn-secondary col-lg-4">
+                        <i class="kt-nav__link-icon flaticon-add"></i>ADD TO ORDERS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5" id="orders-panel">
+        <div class="row">
+            <h4 class="col-lg-1 text-left">Orders</h4>
+            <div class="col-lg-11 text-right" *ngIf="orders.length > 0">
+                <button type="button" (click)="openCheckoutDialog()" class="btn btn-info btn-elevate kt-login__btn-secondary" 
+                    [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}"
+                    >
+                    <i class="kt-nav__link-icon flaticon-shopping-basket"></i>CHECKOUT
+                </button>
+            </div>
+        </div>
+        <div class="hr"></div>
+        <div class="order-item-list">
+            <div class="main-item-list">
+                <div class="row list-item" *ngFor="let order of orders">
+                    <h5 class="col-lg-1">x{{order.quantity}}</h5>
+                    <h5 class="col-lg-7">{{order.itemName}}</h5>
+                    <h5 class="col-lg-2 text-right">P{{ order.totalPrice }}</h5>
+                    <div class="col-lg-2 text-right">
+                        <button type="button" [disabled]="loading" (click)="removeOrder(order.itemId)" class="btn btn-danger btn-elevate btn-sm ">
+                            <i class="kt-nav__link-icon flaticon-delete"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+            <h4 class="col-lg-6 text-left">TOTAL</h4>
+            <h4 class="col-lg-6 text-right">P{{totalStr}}</h4>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="kt-portlet"
+	[ngClass]="{ 'kt-portlet--body-progress' : viewLoading, 'kt-portlet--body-progress-overlay' : loadingAfterSubmit }">
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">{{ data.title }}</h3>
+			<span class="kt-portlet__head-icon kt-hide">
+				<i class="la la-gear"></i>
+			</span>
+		</div>
+	</div>
+	<div class="kt-form kt-form--label-align-right kt-form--group-seperator-dashed">
+		<div class="kt-portlet__foot kt-portlet__no-border kt-portlet__foot--fit text-right">
+			<div class="kt-form__actions kt-form__actions--solid">
+				<div class="col-lg-25">
+					<form class="kt-form" [formGroup]="mainForm" autocomplete="on">
+						<div class="form-group row">
+							<input type="text" placeholder="Search Inventory Items" aria-label="Number" formControlName="inventoryItems"
+								[matAutocomplete]="auto" class="form-control">
+							<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onInventoryItemSelected($event)">
+								<mat-option *ngFor="let inventoryItem of filteredOptions | async" [id]="inventoryItem"
+									[value]="inventoryItem.name">
+									{{inventoryItem.name}}
+								</mat-option>
+							</mat-autocomplete>
+						</div>
+						<div *ngIf="inventoryItemUnitName !== undefined && inventoryItemUnitName !== ''">
+							<div class="form-group row">
+								<label class="col-lg-4 col-form-label">Unit of Measurement:</label>
+								<div class="col-xl-8">
+									<div class="col-form-label">{{inventoryItemUnitName}}</div>
+								</div>
+							</div>
+							<div class="form-group row">
+								<label class="col-lg-4 col-form-label">Quantity:</label>
+								<div class="col-lg-9 col-xl-6 text-left">
+									<button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-2"
+										(click)="changeQuantity(-1)">-</button>
+									<input id="tf-quantity" type="number" [value]="quantity" formControlName="quantity" class="col-lg-2" />
+									<button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-2"
+										(click)="changeQuantity(1)">+</button>
+								</div>
+							</div>
+						</div>
+						<div class="actions">
+							<button type="button" class="btn btn-secondary btn-elevate kt-login__btn-secondary"
+								(click)="onNoClick()">Cancel</button>
+							<button type="button" class="btn btn-primary btn-elevate kt-login__btn-primary bt-add-item" (click)="addMenuInventoryItem()">Add
+								Item</button>
+						</div>
+					</form>
+				</div>
+					
+			</div>
+		</div>
+	</div>
+</div>

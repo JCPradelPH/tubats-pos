@@ -1,0 +1,1 @@
+export { MenuCategory } from './menu-category.model';

@@ -1,0 +1,105 @@
+<section>
+	<form class="kt-form" [formGroup]="mainForm" autocomplete="off">
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Name:</label>
+			<div class="col-lg-9 col-xl-6">
+				<input type="text" placeholder="Name" formControlName="name" class="form-control" />
+				<div class="form-text text-muted">*Required</div>
+				<mat-error *ngIf="isControlHasError('name','required')">
+					<strong>You did not enter a value for this required field</strong>
+				</mat-error>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Description:</label>
+			<div class="col-lg-9 col-xl-6">
+				<textarea placeholder="Description" formControlName="description" class="form-control"></textarea>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Price:</label>
+			<div class="col-lg-9 col-xl-6">
+				<input type="number" placeholder="Price" formControlName="price" class="form-control" />
+				<div class="form-text text-muted">*Required</div>
+				<mat-error *ngIf="isControlHasError('price','required')">
+					<strong>You did not enter a value for this required field</strong>
+				</mat-error>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Category:</label>
+			<div class="col-lg-9 col-xl-6">
+				<select class="form-control" name="categories" (change)="onCategorySelected($event.target.value)">
+					<option *ngFor="let category of categories | async" [selected]="category.id === categoryId" value="{{category.id}}" [ngValue]="category.id">
+						{{category.name}}</option>
+				</select>
+				<div class="form-text text-muted">Select Menu Category</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Inventory Items:</label>
+			<div class="col-lg-9 col-xl-6">
+				<button (click)="openItemDialog()" id="add-inventory-items"
+					class="btn btn-success btn-elevate kt-login__btn-primary">Add Inventory Items</button>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label"></label>
+			<div class="col-lg-9 col-xl-6">
+				<mat-chip-list  #chipList>
+					<mat-chip color="accent" *ngFor="let menuInventoryItem of menuInventoryItemsObs | async" 
+						(removed)="removeChip(menuInventoryItem)">
+						{{ menuInventoryItem.inventoryItemName }} - {{ menuInventoryItem.quantity }} 
+						{{ menuInventoryItem.inventoryItemUnitName }}
+						<mat-icon matChipRemove>cancel</mat-icon>
+					</mat-chip>
+				</mat-chip-list>
+			</div>
+		</div>
+
+		<div *ngIf="editId !== undefined && editId !== ''">
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Created By</label>
+					<div class="form-text text-muted">{{ createdBy }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Created At</label>
+					<div class="form-text text-muted">{{ createdAt }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Updated By</label>
+					<div class="form-text text-muted">{{ updatedBy }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Updated At</label>
+					<div class="form-text text-muted">{{ updatedAt }}</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="actions">
+			<button routerLink="/item-menu" [disabled]="loading" id="kt_login_signup_cancel"
+				class="btn btn-secondary btn-elevate kt-login__btn-secondary">Cancel</button>
+			<button [disabled]="loading" (click)="submit()" id="submit-details"
+				class="btn btn-primary btn-elevate kt-login__btn-primary"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Submit</button>
+		</div>
+	</form>
+</section>

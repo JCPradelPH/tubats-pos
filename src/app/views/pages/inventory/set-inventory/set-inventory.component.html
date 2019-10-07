@@ -1,0 +1,85 @@
+<section>
+	<form class="kt-form" [formGroup]="mainForm" autocomplete="off">
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Item Name:</label>
+			<div class="col-lg-9 col-xl-6">
+				<input type="text" placeholder="Name" formControlName="name" class="form-control" />
+				<div class="form-text text-muted">*Required</div>
+				<mat-error *ngIf="isControlHasError('name','required')">
+					<strong>You did not enter a value for this required field</strong>
+				</mat-error>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Unit of Measurement:</label>
+			<div class="col-lg-9 col-xl-6">
+				<select class="form-control" name="units" (change)="onUnitSelected($event.target.value)">
+					<option *ngFor="let unit of units | async" [selected]="unit.id === unitId" value="{{unit.id}}"
+						[ngValue]="unit.id">
+						{{unit.name}}</option>
+				</select>
+				<div class="form-text text-muted">Select Unit of Measurement</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-lg-3 col-form-label">Stock:</label>
+			<div class="col-lg-9 col-xl-6">
+				<input type="number" placeholder="Stock" formControlName="stock" class="form-control" />
+				<div class="form-text text-muted">*Required</div>
+				<mat-error *ngIf="isControlHasError('stock','required')">
+					<strong>You did not enter a value for this required field</strong>
+				</mat-error>
+			</div>
+		</div>
+
+		<!-- <div class="form-group row">
+			<label class="col-lg-3 col-form-label">Related Items:</label>
+			<div class="col-lg-9 col-xl-6">
+				<button (click)="openItemDialog()" id="add-related-items"
+					class="btn btn-primary btn-elevate kt-login__btn-primary">Add Related Items</button>
+			</div>
+		</div> -->
+
+		<div *ngIf="editId !== undefined && editId !== ''">
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Created By</label>
+					<div class="form-text text-muted">{{ createdBy }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Created At</label>
+					<div class="form-text text-muted">{{ createdAt }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Updated By</label>
+					<div class="form-text text-muted">{{ updatedBy }}</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-lg-3 col-form-label"></label>
+				<div class="col-lg-9 col-xl-6">
+					<label class="col-form-label">Updated At</label>
+					<div class="form-text text-muted">{{ updatedAt }}</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="actions">
+			<button routerLink="/inventory" [disabled]="loading" id="kt_login_signup_cancel"
+				class="btn btn-secondary btn-elevate kt-login__btn-secondary">Cancel</button>
+			<button [disabled]="loading" (click)="submit()" id="submit-details"
+				class="btn btn-primary btn-elevate kt-login__btn-primary"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Submit</button>
+		</div>
+	</form>
+</section>

@@ -1,0 +1,140 @@
+<section>
+    <form class="kt-form" [formGroup]="mainForm" autocomplete="off">
+
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label">Transaction Date:</label>
+            <div class="col-lg-9 col-xl-6">
+                <input class="form-control" [matDatepicker]="picker" placeholder="Choose Transaction Date" formControlName="transactionDate" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label">Expense Category:</label>
+            <div class="col-lg-9 col-xl-6">
+                <select [disabled]="editId !== '' && editId !== undefined" class="form-control" name="category" (change)="onExpenseCategorySelected($event.target.value)">
+                    <option *ngFor="let category of categories | async" [selected]="category.id === categoryId" value="{{category.id}}"
+                        [ngValue]="category.id">
+                        {{category.name}}</option>
+                </select>
+                <div class="form-text text-muted">Select Expense Category</div>
+            </div>
+        </div>
+
+        <div class="recurring-expenses-form-container" *ngIf="categoryId === 'C1Vh5cszcq7qb8p2cT9l'">
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label">Recurring Expenses:</label>
+                <div class="col-lg-9 col-xl-6">
+                    <select class="form-control" name="expense" (change)="onRecurringExpenseSelected($event.target.value)">
+                        <option *ngFor="let expense of expenses | async" [selected]="expense.id === expenseId"
+                            value="{{expense.id}}" [ngValue]="expense.id">
+                            {{expense.name}}</option>
+                    </select>
+                    <div class="form-text text-muted">Select Recurring Expenses</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="inventory-form-container" *ngIf="categoryId === 'tSvxtv8qLvZ8XxD8Ykqq'">
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label">Inventory Item:</label>
+                <div class="col-lg-9 col-form-label" *ngIf="editId !== '' && editId !== undefined">{{expenseName}}</div>
+                <div class="col-lg-9 col-xl-6 text-left"  *ngIf="editId === '' || editId === undefined">
+                    <input type="text" placeholder="Search Inventory Items" aria-label="Number" formControlName="inventoryItems"
+                        [matAutocomplete]="auto" class="form-control">
+                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onInventoryItemSelected($event)">
+                        <mat-option *ngFor="let inventoryItem of filteredOptions | async" [id]="inventoryItem" [value]="inventoryItem.name">
+                            {{inventoryItem.name}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
+            </div>
+            
+            <div *ngIf="inventoryItemUnitName !== undefined && inventoryItemUnitName !== ''">
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Unit of Measurement:</label>
+                    <div class="col-lg-9 col-form-label">{{inventoryItemUnitName}}</div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Quantity:</label>
+                    <div class="col-lg-9 text-left row">
+                        <button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-1"
+                            (click)="changeQuantity(-1)">-</button>
+                        <input id="tf-quantity" type="number" [value]="quantity" formControlName="quantity" class="col-lg-2" />
+                        <button type="button" class="btn btn-success btn-elevate kt-login__btn-secondary col-lg-1"
+                            (click)="changeQuantity(1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row" *ngIf="categoryId === 'uJjV12p2ornYZhNvYA8Y'">
+            <label class="col-lg-3 col-form-label">Name:</label>
+            <div class="col-lg-9 col-xl-6">
+                <input type="text" placeholder="Name" formControlName="name" class="form-control" />
+                <div class="form-text text-muted">*Required</div>
+                <mat-error *ngIf="isControlHasError('name','required')">
+                    <strong>You did not enter a value for this required field</strong>
+                </mat-error>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label">Transaction Amount:</label>
+            <div class="col-lg-9 col-xl-6">
+                <input type="number" placeholder="Transaction Amount" formControlName="amount" class="form-control" />
+                <div class="form-text text-muted">*Required</div>
+                <mat-error *ngIf="isControlHasError('amount','required')">
+                    <strong>You did not enter a value for this required field</strong>
+                </mat-error>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-lg-3 col-form-label">Description:</label>
+            <div class="col-lg-9 col-xl-6">
+                <textarea placeholder="Description" formControlName="description" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <div *ngIf="editId !== undefined && editId !== ''">
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label"></label>
+                <div class="col-lg-9 col-xl-6">
+                    <label class="col-form-label">Created By</label>
+                    <div class="form-text text-muted">{{ createdBy }}</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label"></label>
+                <div class="col-lg-9 col-xl-6">
+                    <label class="col-form-label">Created At</label>
+                    <div class="form-text text-muted">{{ createdAt }}</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label"></label>
+                <div class="col-lg-9 col-xl-6">
+                    <label class="col-form-label">Updated By</label>
+                    <div class="form-text text-muted">{{ updatedBy }}</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label"></label>
+                <div class="col-lg-9 col-xl-6">
+                    <label class="col-form-label">Updated At</label>
+                    <div class="form-text text-muted">{{ updatedAt }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button routerLink="/expense-and-utility" [disabled]="loading" id="kt_login_signup_cancel"
+                class="btn btn-secondary btn-elevate kt-login__btn-secondary">Cancel</button>
+            <button [disabled]="loading" (click)="submit()" id="submit-details"
+                class="btn btn-primary btn-elevate kt-login__btn-primary"
+                [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">Submit</button>
+        </div>
+    </form>
+</section>

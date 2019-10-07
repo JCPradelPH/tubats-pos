@@ -1,0 +1,1 @@
+export { RecurringExpense } from './recurring-expense.model';
