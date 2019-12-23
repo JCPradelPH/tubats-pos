@@ -57,6 +57,13 @@ export class MenuConfig {
 					bullet: 'dot',
 				},
 				{
+					title: 'Low Stocks',
+					root: true,
+					icon: 'flaticon-danger',
+					page: '/low-stocks',
+					bullet: 'dot',
+				},
+				{
 					title: 'Recurring Expense',
 					root: true,
 					icon: 'flaticon2-calendar-4',

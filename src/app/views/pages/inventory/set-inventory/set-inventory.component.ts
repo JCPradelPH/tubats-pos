@@ -30,6 +30,7 @@ export class SetInventoryComponent implements OnInit {
 		id: [''],
 		name: ['', Validators.compose([Validators.required,])],
 		stock: ['', Validators.compose([Validators.required,])],
+		minimumStockAllowed: ['', Validators.compose([Validators.required,])],
 	};
 	editId: string;
 	unitId: string;
@@ -146,6 +147,8 @@ export class SetInventoryComponent implements OnInit {
 		inventory.id = this.editId || UUID.UUID();
 		inventory.name = controls['name'].value;
 		inventory.stock = controls['stock'].value;
+		inventory.minimumStockAllowed = controls['minimumStockAllowed'].value;
+		inventory.isLowOnStock = controls['stock'].value <= controls['minimumStockAllowed'].value;
 		inventory.unitId = this.unitId;
 		inventory.createdBy = this.editId === undefined ? this.firebaseAuth.auth.currentUser.email : this.createdBy;
 		inventory.updatedAt = new Date().getTime();

@@ -8,6 +8,7 @@ import { FirestoreService } from '../../../../services/firestore.service';
 import { merge } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { PosTransactionsListDataSource } from './pos-transactions.data-source';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'kt-pos-transactions-list',
@@ -25,15 +26,22 @@ export class PosTransactionsListComponent implements OnInit {
   collectionName: string = "orders";
   putScreenPath: string = "menu-category/set-menu-category";
 
+  mainForm: FormGroup;
+  formFields: Object = {
+    startDate: [new Date(), Validators.compose([Validators.required,])],
+    endDate: [new Date(), Validators.compose([Validators.required,])],
+  };
+  loading: boolean = false;
+
   constructor(
-    private layoutUtilsService: LayoutUtilsService,
+    private fb: FormBuilder,
     private router: Router,
     private firestoreService: FirestoreService,
   ) { }
 
   ngOnInit() {
+    this.mainForm = this.fb.group(this.formFields);
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         tap(() => {
@@ -41,11 +49,13 @@ export class PosTransactionsListComponent implements OnInit {
         })
       )
       .subscribe();
-
-    // Init DataSource
     this.dataSource = new PosTransactionsListDataSource(this.firestoreService);
-    // First load
-    this.loadItems(true);
+  }
+
+  search() {
+    this.dataSource = new PosTransactionsListDataSource(this.firestoreService);
+    this.loading = true
+    this.loadItems();
   }
 
 	/**
@@ -53,20 +63,33 @@ export class PosTransactionsListComponent implements OnInit {
 	 *
 	 * @param firstLoad: boolean
 	 */
-  loadItems(firstLoad: boolean = false) {
+  async loadItems() {
+    const controls = this.mainForm.controls;
+
+    if (this.mainForm.invalid) return;
+
+    const startDate: number = new Date(controls['startDate'].value).getTime()
+    const endDate: number = new Date(controls['endDate'].value).getTime()
     const queryParams = new QueryParamsModel(
       {},
       this.sort.direction,
       this.sort.active,
       this.paginator.pageIndex,
-      firstLoad ? 6 : this.paginator.pageSize
+      this.paginator.pageSize
     );
-    this.dataSource.loadItems(queryParams);
+    console.log(`startDate: ${startDate}`)
+    console.log(`endDate: ${endDate}`)
+    await this.dataSource.loadItems(queryParams, startDate, endDate);
     this.selection.clear();
+    this.loading = false
   }
 
   showUpdateDialog(data) {
     this.router.navigateByUrl(`${this.putScreenPath}?id=${data.id}`);
+  }
+
+  showViewPage(data) {
+    this.router.navigateByUrl(`pos-transactions/pos-transactions-detail?id=${data.id}`);
   }
 
 }

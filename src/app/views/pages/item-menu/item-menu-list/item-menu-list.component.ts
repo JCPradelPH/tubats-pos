@@ -60,7 +60,7 @@ export class ItemMenuListComponent implements OnInit {
 			this.sort.direction,
 			this.sort.active,
 			this.paginator.pageIndex,
-			firstLoad ? 6 : this.paginator.pageSize
+			this.paginator.pageSize
 		);
 		this.dataSource.loadItems(queryParams);
 		this.selection.clear();

@@ -48,6 +48,12 @@ export class PageConfig {
 				'desc': 'List of transactions from the POS'
 			},
 		},
+		'low-stocks': {
+			page: {
+				'title': 'Low Stock Items',
+				'desc': 'List of inventory items that are low on stocks'
+			},
+		},
 		ngbootstrap: {
 			accordion: {
 				page: {title: 'Accordion', desc: ''}

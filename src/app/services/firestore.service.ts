@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, DocumentChangeAction, Action, DocumentSnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, DocumentChangeAction, Action, DocumentSnapshot, QueryFn } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ export class FirestoreService {
 	getDocuments(collection: string): Observable<any> {
 		return this.firestore.collection(collection, ref => ref.orderBy("updatedAt", "asc")).snapshotChanges().pipe(
 			map(changes =>
-				changes.map(c => ({ ...c.payload.doc.data() }))
+				changes.map(c => (c.payload.doc.data()))
 			)
 		);
 	}
@@ -32,6 +32,31 @@ export class FirestoreService {
 
 	async getDocumentsPromise(collection: string): Promise<firebase.firestore.DocumentData[]> {
 		const rows: firebase.firestore.QuerySnapshot = await this.firestore.collection(collection).ref.get();
+		return rows.docs.map((value: firebase.firestore.QueryDocumentSnapshot) => value.data());
+	}
+
+	async getDocumentsByDate(collection: string, startTime: number, endTime: number): Promise<firebase.firestore.DocumentData[]> {
+		const rows: firebase.firestore.QuerySnapshot = await this.firestore
+			.collection(collection)
+			.ref
+			.where("transactionDate", ">=", startTime)
+			.where("transactionDate", "<=", endTime)
+			// .orderBy("transactionDate")
+			// .startAt(startTime)
+			// .endAt(endTime)
+			.get();
+		return rows.docs.map((value: firebase.firestore.QueryDocumentSnapshot) => value.data());
+	}
+
+	async getDocumentsOp(collection: string, 
+		fieldPath: string | firebase.firestore.FieldPath, 
+		opStr: firebase.firestore.WhereFilterOp, 
+		value: any): Promise<firebase.firestore.DocumentData[]> {
+		const rows: firebase.firestore.QuerySnapshot = await this.firestore
+			.collection(collection)
+			.ref
+			.where(fieldPath, opStr, value)
+			.get();
 		return rows.docs.map((value: firebase.firestore.QueryDocumentSnapshot) => value.data());
 	}
 
@@ -51,7 +76,7 @@ export class FirestoreService {
 	getDocumentByParentId(collection: string, filedName: string, parentId: string): Observable<any> {
 		return this.firestore.collection(collection, ref => ref.where(filedName, '==', parentId)).snapshotChanges().pipe(
 			map(changes =>
-				changes.map(c => ({ ...c.payload.doc.data() }))
+				changes.map(c => (c.payload.doc.data()))
 			)
 		);
 	}

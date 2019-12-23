@@ -3,33 +3,26 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import { InterceptService } from "../../../core/_base/crud";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { TranslateModule } from "@ngx-translate/core";
-import { MatCheckboxModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelect, MatTableModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule, MatChipsModule, MatCardModule, MatDatepickerModule } from "@angular/material";
+import { MatCheckboxModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelect, MatTableModule, MatIconModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule } from "@angular/material";
 import { RouterModule, Routes } from "@angular/router";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { DeleteEntityDialogComponent } from "../../partials/content/crud";
 import { PartialsModule } from "../../partials/partials.module";
-import { PosTransactionsComponent } from "./pos-transactions.component";
-import { PosTransactionsListComponent } from "./pos-transactions-list/pos-transactions-list.component";
-import { PosTransactionsDetailComponent } from './pos-transactions-detail/pos-transactions-detail.component';
+import { LowStocksComponent } from "./low-stocks.component";
+import { LowStocksListComponent } from "./low-stocks-list/low-stocks-list.component";
 
 const routes: Routes = [
     {
         path: '',
-        component: PosTransactionsComponent,
+        component: LowStocksComponent,
         children: [
             {
                 path: '',
-                component: PosTransactionsListComponent,
+                component: LowStocksListComponent,
             },
             {
-                path: 'pos-transactions-list',
-                component: PosTransactionsListComponent,
-                data: { returnUrl: window.location.pathname }
-            },
-            {
-                path: 'pos-transactions-detail',
-                component: PosTransactionsDetailComponent,
+                path: 'low-stocks',
+                component: LowStocksListComponent,
                 data: { returnUrl: window.location.pathname }
             },
         ]
@@ -56,9 +49,6 @@ const routes: Routes = [
         MatPaginatorModule,
         MatSortModule,
         PartialsModule,
-        MatCardModule,
-        MatChipsModule,
-        MatDatepickerModule
     ],
     providers: [
         InterceptService,
@@ -69,21 +59,19 @@ const routes: Routes = [
         },
         AngularFirestore
     ],
-    exports: [PosTransactionsComponent],
+    exports: [LowStocksComponent],
     entryComponents: [
-        DeleteEntityDialogComponent,
     ],
     declarations: [
-        PosTransactionsComponent,
-        PosTransactionsListComponent,
-        PosTransactionsDetailComponent,
+        LowStocksComponent,
+        LowStocksListComponent,
     ]
 })
 
-export class POSTransactionsModule {
+export class LowStocksModule {
     static forRoot(): ModuleWithProviders {
         return {
-            ngModule: POSTransactionsModule,
+            ngModule: LowStocksModule,
             providers: [
 
             ]

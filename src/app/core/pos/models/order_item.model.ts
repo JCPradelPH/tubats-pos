@@ -4,6 +4,9 @@ export class OrderItem extends BaseModel {
 
     id: string;
     itemId: string;
+    itemName: string;
+    itemDescription: string;
+    itemCategory: string;
     orderId: string;
     itemCategoryId: string;
     menuInventoryItems: Object[];
@@ -15,6 +18,9 @@ export class OrderItem extends BaseModel {
         return {
             id: this.id,
             itemId: this.itemId,
+            itemName: this.itemName,
+            itemDescription: this.itemDescription,
+            itemCategory: this.itemCategory,
             orderId: this.orderId,
             itemCategoryId: this.itemCategoryId,
             menuInventoryItems: this.menuInventoryItems,
@@ -28,6 +34,9 @@ export class OrderItem extends BaseModel {
         if (data) {
             this.id = data["id"];
             this.itemId = data["itemId"];
+            this.itemName = data["itemName"];
+            this.itemDescription = data["itemDescription"];
+            this.itemCategory = data["itemCategory"];
             this.orderId = data["orderId"];
             this.itemCategoryId = data["itemCategoryId"];
             this.menuInventoryItems = data["menuInventoryItems"];
@@ -40,7 +49,10 @@ export class OrderItem extends BaseModel {
 
     clear(): void {
         this.id = '';
+        this.itemName = '';
+        this.itemDescription = '';
         this.itemCategoryId = '';
+        this.itemCategory = '';
         this.orderId = '';
         this.menuInventoryItems = [];
         this.itemPrice = 0;

@@ -55,6 +55,7 @@ import * as json from 'highlight.js/lib/languages/json';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { InventoryModule } from './views/pages/inventory/inventory.module';
+import { LowStocksModule } from './views/pages/low-stocks/low-stocks.module';
 
 // tslint:disable-next-line:class-name
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {

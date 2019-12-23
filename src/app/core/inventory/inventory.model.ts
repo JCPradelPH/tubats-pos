@@ -5,6 +5,8 @@ export class Inventory extends BaseModel {
     id: string;
     name: string;
     stock: number;
+    minimumStockAllowed: number;
+    isLowOnStock: boolean;
     unitId: string;
     createdBy: string;
     updatedBy: string;
@@ -16,6 +18,8 @@ export class Inventory extends BaseModel {
             id: this.id,
             name: this.name,
             stock: this.stock,
+            minimumStockAllowed: this.minimumStockAllowed,
+            isLowOnStock: this.isLowOnStock,
             unitId: this.unitId,
             createdBy: this.createdBy,
             updatedBy: this.updatedBy,
@@ -29,6 +33,8 @@ export class Inventory extends BaseModel {
             this.id = data["id"];
             this.name = data["name"];
             this.stock = data["stock"];
+            this.minimumStockAllowed = data["minimumStockAllowed"];
+            this.isLowOnStock = data["isLowOnStock"];
             this.unitId = data["unitId"];
             this.createdBy = data["createdBy"];
             this.updatedBy = data["updatedBy"];
@@ -42,6 +48,8 @@ export class Inventory extends BaseModel {
         this.id = '';
         this.name = '';
         this.stock = 0;
+        this.minimumStockAllowed = 0;
+        this.isLowOnStock = false;
         this.unitId = '';
         this.createdBy = '';
         this.updatedBy = '';

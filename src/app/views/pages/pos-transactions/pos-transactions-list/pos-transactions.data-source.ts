@@ -76,20 +76,18 @@ export class PosTransactionsListDataSource implements DataSource<Order> {
         return queryResults;
     }
 
-    loadItems(queryParams: QueryParamsModel) {
-        this.loadingSubject.next(true);
-        this.firestoreService.getDocuments(this.collectionName).pipe(
-            tap(res => {
-                console.log('📝💣');
-                console.log(res);
-                const result = this.baseFilter(res, queryParams);
-                this.entitySubject.next(result.items);
-                this.paginatorTotalSubject.next(result.totalCount);
-
-            }),
-            catchError(err => of(new QueryResultsModel([], err))),
-            finalize(() => this.loadingSubject.next(false))
-        ).subscribe();
+    async loadItems(queryParams: QueryParamsModel, startTime: number, endTime: number): Promise<void> {
+        console.log(startTime)
+        console.log(endTime)
+        if (startTime > 0 && endTime > 0) {
+            this.loadingSubject.next(true);
+            const docs: firebase.firestore.DocumentData[] = await this.firestoreService
+                .getDocumentsByDate(this.collectionName, startTime, endTime);
+            const result = this.baseFilter(docs, queryParams);
+            this.entitySubject.next(result.items);
+            this.paginatorTotalSubject.next(result.totalCount);
+            this.loadingSubject.next(false);
+        }
     }
 
     sortArray(_incomingArray: any[], _sortField: string = '', _sortOrder: string = 'asc'): any[] {

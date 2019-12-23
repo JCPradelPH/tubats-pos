@@ -8,6 +8,7 @@ import { FirestoreService } from '../../../../services/firestore.service';
 import { merge } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ExpenseAndUtilityListDataSource } from './expense-and-utility.data-source';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
 	selector: 'kt-expense-and-utility-list',
@@ -26,15 +27,22 @@ export class ExpenseAndUtilityListComponent implements OnInit {
 	collectionName: string = "expenses_and_utilities";
 	putScreenPath: string = "expense-and-utility/set-expense-and-utility";
 
+	mainForm: FormGroup;
+	formFields: Object = {
+		startDate: [new Date(), Validators.compose([Validators.required,])],
+		endDate: [new Date(), Validators.compose([Validators.required,])],
+	};
+	loading: boolean = false;
+
 	constructor(
-		private layoutUtilsService: LayoutUtilsService,
+		private fb: FormBuilder,
 		private router: Router,
 		private firestoreService: FirestoreService,
 	) { }
 
 	ngOnInit() {
+		this.mainForm = this.fb.group(this.formFields);
 		this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
-
 		merge(this.sort.sortChange, this.paginator.page)
 			.pipe(
 				tap(() => {
@@ -42,11 +50,13 @@ export class ExpenseAndUtilityListComponent implements OnInit {
 				})
 			)
 			.subscribe();
-
-		// Init DataSource
 		this.dataSource = new ExpenseAndUtilityListDataSource(this.firestoreService);
-		// First load
-		this.loadItems(true);
+	}
+
+	search() {
+		this.dataSource = new ExpenseAndUtilityListDataSource(this.firestoreService);
+		this.loading = true
+		this.loadItems();
 	}
 
 	/**
@@ -54,16 +64,25 @@ export class ExpenseAndUtilityListComponent implements OnInit {
 	 *
 	 * @param firstLoad: boolean
 	 */
-	loadItems(firstLoad: boolean = false) {
+	async loadItems() {
+		const controls = this.mainForm.controls;
+
+		if (this.mainForm.invalid) return;
+
+		const startDate: number = new Date(controls['startDate'].value).getTime()
+		const endDate: number = new Date(controls['endDate'].value).getTime()
 		const queryParams = new QueryParamsModel(
 			{},
 			this.sort.direction,
 			this.sort.active,
 			this.paginator.pageIndex,
-			firstLoad ? 6 : this.paginator.pageSize
+			this.paginator.pageSize
 		);
-		this.dataSource.loadItems(queryParams);
+		console.log(`startDate: ${startDate}`)
+		console.log(`endDate: ${endDate}`)
+		await this.dataSource.loadItems(queryParams, startDate, endDate);
 		this.selection.clear();
+		this.loading = false
 	}
 
 	showUpdateDialog(data) {

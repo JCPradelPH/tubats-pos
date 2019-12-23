@@ -1,12 +1,11 @@
-import { ExpenseAndUtility } from '../../../../core/expense-and-utility';
+import { Inventory } from '../../../../core/inventory';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { QueryParamsModel, QueryResultsModel, HttpExtenstionsModel } from '../../../../core/_base/crud';
 import { FirestoreService } from '../../../../services/firestore.service';
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { QueryFn } from '@angular/fire/firestore';
 
-export class ExpenseAndUtilityListDataSource implements DataSource<ExpenseAndUtility> {
+export class LowStocksListDataSource implements DataSource<Inventory> {
     // Public properties
     entitySubject = new BehaviorSubject<any[]>([]);
     hasItems: boolean = false; // Need to show message: 'No records found
@@ -19,7 +18,7 @@ export class ExpenseAndUtilityListDataSource implements DataSource<ExpenseAndUti
     paginatorTotalSubject = new BehaviorSubject<number>(0);
     paginatorTotal$: Observable<number>;
 
-    collectionName: string = "expenses_and_utilities";
+    collectionName: string = "inventory";
 
 	/**
 	 * Data-Source Constructor
@@ -77,18 +76,14 @@ export class ExpenseAndUtilityListDataSource implements DataSource<ExpenseAndUti
         return queryResults;
     }
 
-    async loadItems(queryParams: QueryParamsModel, startTime: number, endTime: number): Promise<void> {
-        console.log(startTime)
-        console.log(endTime)
-        if (startTime > 0 && endTime > 0) {
-            this.loadingSubject.next(true);
-            const docs: firebase.firestore.DocumentData[] = await this.firestoreService
-                .getDocumentsByDate(this.collectionName, startTime, endTime);
-            const result = this.baseFilter(docs, queryParams);
-            this.entitySubject.next(result.items);
-            this.paginatorTotalSubject.next(result.totalCount);
-            this.loadingSubject.next(false);
-        }
+    async loadItems(queryParams: QueryParamsModel) {
+        this.loadingSubject.next(true);
+        
+        const res: firebase.firestore.DocumentData[] = await this.firestoreService
+            .getDocumentsOp( this.collectionName, "isLowOnStock", "==", true );
+        const result = this.baseFilter(res, queryParams);
+        this.entitySubject.next(result.items);
+        this.paginatorTotalSubject.next(result.totalCount);
     }
 
     sortArray(_incomingArray: any[], _sortField: string = '', _sortOrder: string = 'asc'): any[] {

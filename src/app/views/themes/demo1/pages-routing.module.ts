@@ -28,6 +28,7 @@ const routes: Routes = [
 			{ path: 'expense-and-utility', loadChildren: 'app/views/pages/expense-and-utility/expense-and-utility.module#ExpenseAndUtilityModule' },
 			{ path: 'pos', loadChildren: 'app/views/pages/pos/pos.module#POSModule' },
 			{ path: 'pos-transactions', loadChildren: 'app/views/pages/pos-transactions/pos-transactions.module#POSTransactionsModule' },
+			{ path: 'low-stocks', loadChildren: 'app/views/pages/low-stocks/low-stocks.module#LowStocksModule' },
 			{path: 'error/:type', component: ErrorPageComponent},
 			{path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 			{path: '**', redirectTo: 'dashboard', pathMatch: 'full'}
