@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { FirestoreService } from './firestore.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class UtilsService {
 
-	constructor() { }
+	constructor(private firestoreService: FirestoreService) { }
 
 	getParameterByName(name: string) {
 		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -77,6 +79,11 @@ export class UtilsService {
 		const year = date.getFullYear();
 
 		return day + ' ' + monthNames[monthIndex] + ' ' + year;
+	}
+
+	getLowStockItems(): Observable<unknown[]>  {
+		return this.firestoreService
+			.getDocumentsObs("inventory", "isLowOnStock", "==", true);
 	}
 
 }

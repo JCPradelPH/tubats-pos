@@ -22,6 +22,17 @@ export class FirestoreService {
 		);
 	}
 
+	getDocumentsObs(collection: string,
+		fieldPath: string | firebase.firestore.FieldPath,
+		opStr: firebase.firestore.WhereFilterOp,
+		value: any): Observable<any> {
+		return this.firestore.collection(collection, ref => ref.where(fieldPath, opStr, value)).snapshotChanges().pipe(
+			map(changes =>
+				changes.map(c => (c.payload.doc.data()))
+			)
+		);
+	}
+
 	getDocumentById(collection: string, docId: string): Observable<any> {
 		return this.firestore.collection(collection).doc(docId).snapshotChanges().pipe(
 			map(changes =>

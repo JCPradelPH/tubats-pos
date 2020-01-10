@@ -1,10 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { filter } from 'rxjs/operators';
+import { filter, tap, finalize, map } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 import * as objectPath from 'object-path';
 import { LayoutConfigService, MenuAsideService, MenuOptions } from '../../../../core/_base/layout';
 import { OffcanvasOptions } from '../../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
+import { FirestoreService } from '../../../../services/firestore.service';
+import { Observable } from 'rxjs';
 
 @Component({
 	selector: 'kt-aside-left',
@@ -19,6 +21,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 	currentRouteUrl: string = '';
 	insideTm: any;
 	outsideTm: any;
+	lowStockCounter$: Observable<number>;
+	lowStockCounter: number = 0;
 
 	menuCanvasOptions: OffcanvasOptions = {
 		baseClass: 'kt-aside',
@@ -55,7 +59,8 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 		public menuAsideService: MenuAsideService,
 		public layoutConfigService: LayoutConfigService,
 		private router: Router,
-		private render: Renderer2
+		private render: Renderer2,
+		private firestoreService: FirestoreService
 	) {
 	}
 
@@ -80,6 +85,20 @@ export class AsideLeftComponent implements OnInit, AfterViewInit {
 			// tslint:disable-next-line:max-line-length
 			this.render.setAttribute(this.asideMenu.nativeElement, 'data-ktmenu-dropdown-timeout', objectPath.get(config, 'aside.menu.submenu.dropdown.hover-timeout'));
 		}
+
+		this.lowStockCounter$ = this.firestoreService.getDocumentsObs("inventory", "isLowOnStock", "==", true).pipe(
+			tap(res => {
+				console.log('📝💣');
+				console.log(res.length);
+				this.lowStockCounter = res.length
+			}),
+			map(res => {
+				console.log('📝💣');
+				console.log(res.length);
+				return res.length
+			})
+		);
+		this.lowStockCounter$.subscribe();
 	}
 
 	isMenuItemIsActive(item): boolean {

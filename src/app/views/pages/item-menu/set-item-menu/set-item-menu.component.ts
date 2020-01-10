@@ -35,7 +35,7 @@ export class SetItemMenuComponent implements OnInit {
 	formFields: Object = {
 		id: [''],
 		name: ['', Validators.compose([Validators.required,])],
-		price: ['', Validators.compose([Validators.required,])],
+		price: [''],
 		description: [''],
 	};
 	editId: string;

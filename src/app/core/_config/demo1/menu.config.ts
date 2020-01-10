@@ -62,6 +62,7 @@ export class MenuConfig {
 					icon: 'flaticon-danger',
 					page: '/low-stocks',
 					bullet: 'dot',
+					badge: true,
 				},
 				{
 					title: 'Recurring Expense',

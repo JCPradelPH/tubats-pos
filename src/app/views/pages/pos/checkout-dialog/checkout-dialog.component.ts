@@ -65,16 +65,16 @@ export class CheckoutDialogComponent implements OnInit {
 
 	checkout() {
 		
-		if (this.mainForm.controls["tableNumber"].value === "" || this.mainForm.controls["tableNumber"].value === undefined) {
-			this.snackBar.open(`Invalid transaction values. Kindly check the values of your transaction`, '', { duration: 3000 });
-			return;
-		}
-		
-		// if (this.mainForm.controls["tableNumber"].value === "" || this.mainForm.controls["tableNumber"].value === undefined ||
-		// 	this.amountTendered === 0 || this.amountTendered === undefined || this.amountTendered < this.data.total) {
+		// if (this.mainForm.controls["tableNumber"].value === "" || this.mainForm.controls["tableNumber"].value === undefined) {
 		// 	this.snackBar.open(`Invalid transaction values. Kindly check the values of your transaction`, '', { duration: 3000 });
 		// 	return;
 		// }
+		
+		if (this.mainForm.controls["tableNumber"].value === "" || this.mainForm.controls["tableNumber"].value === undefined ||
+			this.amountTendered === 0 || this.amountTendered === undefined || this.amountTendered < this.data.total) {
+			this.snackBar.open(`Invalid transaction values. Kindly check the values of your transaction`, '', { duration: 3000 });
+			return;
+		}
 		this.viewLoading = true;
 		this.loadingAfterSubmit = true;
 		const orderId: string = UUID.UUID();
